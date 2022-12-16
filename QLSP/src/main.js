@@ -19,27 +19,34 @@ function setLocalStorage(mangSP) {
 
 //Gắn sự kiện click cho button search
 document.getElementById("search").addEventListener("click", function () {
-  var mangSP = getLocalStorage();
-  var mangTK = [];
-  console.log(mangSP);
+  var arrPro = getLocalStorage();
+  var searchObj = [];
+  console.log(arrPro );
 
   var chuoiTK = document.getElementById("inputTK").value;
 
-  mangTK = productSer.timKiemSP(mangSP, chuoiTK);
+  searchObj = productSer.search(arrPro , chuoiTK);
 
-  console.log(mangTK);
-  renderTable(mangTK);
+  console.log(searchObj);
+  renderTable(searchObj);
 });
 
 function getLocalStorage() {
-  var mangKQ = JSON.parse(localStorage.getItem("DSSP"));
-  return mangKQ;
+  var arr = JSON.parse(localStorage.getItem("DSSP"));
+  return arr;
 }
 
 document.getElementById ("btnThemSP").addEventListener("click", function () {
   var footerEle = document.querySelector(".modal-footer");
   footerEle.innerHTML = `
-        <button onclick="addProducts()" class="btn btn-success">Thêm sản phẩm</button>
+        <button 
+        type="button" 
+        id="btn-img"
+        onclick="addProducts()" 
+        class="btn btn-success"
+        >Thêm sản phẩm
+        </button>
+        
         <button
         id="btnDong"
         type="button"
@@ -48,9 +55,8 @@ document.getElementById ("btnThemSP").addEventListener("click", function () {
         >
         Đóng
         </button>
-    `;
+    `; 
 });
-
 
 
 function renderTable(mangSP) {
@@ -60,20 +66,27 @@ function renderTable(mangSP) {
     content += `
             <tr>
                 <td>${count}</td>
+                <td>
+                <div class="img_col">
+                <img src='${sp.img}'/>
+                </div>
+                </td>
                 <td>${sp.name}</td>
-                <td>${sp.price}</td>
-                <td>${sp.img}</td>
+                <td>${sp.price}</td>          
+                <td>${sp.screen}</td> 
+                <td>${sp.backCamera}</td> 
+                <td>${sp.frontCamera}</td> 
                 <td>${sp.desc}</td>
                 <td>${sp.type}</td>
                 <td>
                     <button 
-                    onclick="xoaSP('${sp.id}')"
+                    onclick="deleteProduct('${sp.id}')"
                     class="btn btn-danger">
                      <i class="fa fa-trash-o" aria-hidden="true"></i>
                      </button>
 
                     <button 
-                    onclick="xemSP('${sp.id}')"
+                    onclick="viewProduct('${sp.id}')"
                     class="btn btn-info mt-2"> 
                     <i class="fa fa-pencil" aria-hidden="true"></i>
                     </button>
@@ -83,7 +96,9 @@ function renderTable(mangSP) {
     count++;
   });
   document.getElementById("tblDanhSachSP").innerHTML = content;
+  
 }
+
 
 function addProducts() {
   //B1: Lấy thông tin(info) từ form
@@ -114,11 +129,10 @@ function addProducts() {
 
   //B2: lưu info xuống database(cơ sở dữ liệu)
   productSer
-    .themSP(sp)
+    .add(sp)
     .then(function (result) {
       //Load lại danh sách sau khi thêm thành công
       getListProducts();
-
       //gọi sự kiên click có sẵn của close button
       //Để tắt modal khi thêm thành công
       document.querySelector("#myModal .close").click();
@@ -128,8 +142,8 @@ function addProducts() {
     });
 }
 
-function xoaSP(id) {
-  productSer.xoaSanPham(id);
+function deleteProduct(id) {
+  productSer.delete(id);
   Swal.fire({
     title: "Bạn vẫn tiếp tục xóa?",
     text: "Bạn sẽ không thể khôi phục lại!",
@@ -159,9 +173,9 @@ function xoaSP(id) {
     });
 }
 
-function xemSP(id) {
+function viewProduct(id) {
   productSer
-    .xemSanPham(id)
+    .view(id)
     .then(function (result) {
       console.log(result.data);
       //Mở modal
@@ -172,6 +186,7 @@ function xemSP(id) {
      document.getElementById("GiaSP").value = result.data.price;
      document.getElementById("manHinh").value = result.data.screen;
      document.getElementById("backCamera").value = result.data.backCamera;
+     document.getElementById("frontCamera").value = result.data.frontCamera;
      document.getElementById("HinhSP").value = result.data.img;
      document.getElementById("MoTa").value = result.data.desc;
      document.getElementById("loai").value = result.data.type;
@@ -179,7 +194,7 @@ function xemSP(id) {
       //Thêm button cập nhật cho form
       var footerEle = document.querySelector(".modal-footer");
       footerEle.innerHTML = `
-            <button onclick="capNhatSP('${result.data.id}')" class="btn btn-success">Cập nhật</button>
+            <button onclick="updateProduct('${result.data.id}')" class="btn btn-success">Cập nhật</button>
             <button
             id="btnDongCapNhat"
             type="button"
@@ -196,7 +211,7 @@ function xemSP(id) {
     });
 }
 
-function capNhatSP(id) {
+function updateProduct(id) {
   //B1: Lấy thông tin(info) từ form
   if (!validateForm()) return;
   var id = document.getElementById("id").value;
@@ -224,7 +239,7 @@ function capNhatSP(id) {
 
   //B2: Cập nhật thông tin mới xuống DB
   productSer
-    .capNhatSanPham(id, sp)
+    .update(id, sp)
     .then(function (result) {
       console.log(result.data);
       //Load lại danh sách sau khi cập nhật thành công
@@ -249,10 +264,6 @@ function required(val, config) {
   document.getElementById(config.errorCode).style.display = "block";
   return false;
 }
-
-
-
-
 
 
 
@@ -300,12 +311,18 @@ function validateForm() {
     required(img, { errorCode: "tbHinhSP" });
 
 
+    
+    var descValid =
+    required(desc, { errorCode: "tbMota" });
+
+
     var isFormValid = nameValid
     && priceValid
     && screenValid
     && backCameraValid 
     && frontCameraValid
     && imgValid
+    && descValid
     ;
     return isFormValid;
 

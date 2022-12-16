@@ -1,6 +1,5 @@
 function SanPhamService() {
     this.getList = function () {
-        //GET: lấy dữ liệu từ data
         var promise = axios({
             method: 'get',
             url: 'https://6390231465ff4183110a1697.mockapi.io/Products'
@@ -9,9 +8,7 @@ function SanPhamService() {
 
         return promise;
     }
-    this.themSP = function (sp) {
-        //POST: Thêm mới dữ liệu
-        //data: dữ liệu cần thêm vào Cơ sở dữ liệu
+    this.add = function (sp) {
         var promise = axios({
             method: 'post',
             url: 'https://6390231465ff4183110a1697.mockapi.io/Products',
@@ -20,7 +17,7 @@ function SanPhamService() {
 
         return promise;
     }
-    this.xoaSanPham = function (id) {
+    this.delete = function (id) {
         //DELETE: xóa data dựa vào id
         var promise = axios({
             method: 'delete',
@@ -29,7 +26,7 @@ function SanPhamService() {
 
         return promise;
     }
-    this.xemSanPham = function (id) {
+    this.view = function (id) {
         //GET: lấy data cua 1 sản phẩm dựa vào id
         var promise = axios({
             method: 'get',
@@ -38,7 +35,7 @@ function SanPhamService() {
 
         return promise;
     }
-    this.capNhatSanPham = function (id, sp) {
+    this.update = function (id, sp) {
         //PUT: cập nhật data của 1 sản phẩm dựa vào id
         var promise = axios({
             method: 'put',
@@ -50,13 +47,13 @@ function SanPhamService() {
     }
 
 
-    this.timKiemSP = function(mangSP, chuoiTK){
+    this.search = function(mangSP, chuoiTK){
 
-        var mangTK = [];
-       mangTK = mangSP.filter(function(sp){
+        var searchObj = [];
+        searchObj = mangSP.filter(function(sp){
             return sp.name.toLowerCase().indexOf(chuoiTK.toLowerCase()) >= 0;
         });
-        return mangTK;
+        return searchObj;
     }
 
 

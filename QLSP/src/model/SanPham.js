@@ -15,4 +15,5 @@ function SanPham(id, name,price, screen, backCamera, frontCamera, img, desc, typ
   this.img= img;
   this.desc= desc;
   this.type = type;
+
 }
