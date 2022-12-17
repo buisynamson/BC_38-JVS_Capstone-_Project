@@ -100,7 +100,7 @@ function renderTable(mangSP) {
 }
 
 
-function addProducts() {
+async function addProducts() {
   //B1: Lấy thông tin(info) từ form
   // data, info
   if (!validateForm()) return;
@@ -125,52 +125,53 @@ function addProducts() {
     desc,
     type
   );
-  console.log(sp);
-
-  //B2: lưu info xuống database(cơ sở dữ liệu)
-  productSer
-    .add(sp)
-    .then(function (result) {
+      var promise = productSer.add(sp);
+      try {
+        var res = await promise;
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Thêm thành công!',
+          showConfirmButton: false,
+          timer: 1500
+        })
       //Load lại danh sách sau khi thêm thành công
       getListProducts();
       //gọi sự kiên click có sẵn của close button
       //Để tắt modal khi thêm thành công
       document.querySelector("#myModal .close").click();
-    })
-    .catch(function (error) {
+      document.getElementById("form").reset();
+    } catch (error) {
       console.log(error);
-    });
+    }
 }
 
 function deleteProduct(id) {
-  productSer.delete(id);
   Swal.fire({
-    title: "Bạn vẫn tiếp tục xóa?",
-    text: "Bạn sẽ không thể khôi phục lại!",
+    title: "CHÚ Ý !!!",
+    text: "Bạn chắc muốn xoá thông tin của sản phẩm không?",
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
-    confirmButtonText: "Tiếp tục xóa!",
-  })
-    .then(function (result) {
-    
-      if (result.isConfirmed) {
-       
+    confirmButtonText: "Yes",
+  }).then(async function (result) {
+    if (result.isConfirmed) {
+      try {
+        var res = await productSer.delete(id);
+        getListProducts();
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Đã xoá thành công!',
+          showConfirmButton: false,
+          timer: 1500
+        })
+      } catch (error) {
+        console.log(error);
       }
-      Swal.fire({
-        title: "Đã xóa!",
-        timer: 2000,
-        text: "Dữ liệu đã được xóa!",
-        icon: "success",
-      });
-  //Load lại danh sách sau khi xóa thành công
-      getListProducts();
-
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+    }
+  });
 }
 
 function viewProduct(id) {
@@ -211,7 +212,7 @@ function viewProduct(id) {
     });
 }
 
-function updateProduct(id) {
+async function updateProduct(id) {
   //B1: Lấy thông tin(info) từ form
   if (!validateForm()) return;
   var id = document.getElementById("id").value;
@@ -235,24 +236,29 @@ function updateProduct(id) {
     desc,
     type
   );
-  console.log(sp);
-
-  //B2: Cập nhật thông tin mới xuống DB
-  productSer
-    .update(id, sp)
-    .then(function (result) {
-      console.log(result.data);
-      //Load lại danh sách sau khi cập nhật thành công
-      getListProducts();
-
+ 
+var promise = productSer.update(id,sp);
+try {
+  var res = await promise;
+  Swal.fire({
+    position: 'center',
+    icon: 'success',
+    title: 'Cập nhật thành công!',
+    showConfirmButton: false,
+    timer: 1500
+  })
+  //Load lại danh sách sau khi cập nhật thành công
+  getListProducts();
       //gọi sự kiên click có sẵn của close button
       //Để tắt modal khi cập nhật thành công
       document.querySelector("#myModal .close").click();
-    })
-    .catch(function (error) {
+      document.getElementById("form").reset();
+    } catch (error) {
       console.log(error);
-    });
+    }
 }
+
+
 
 function required(val, config) {
   if (val.length > 0) {
@@ -268,6 +274,11 @@ function required(val, config) {
 
 
 // validation
+/// Tên sản phẩm từ 5-30 kí tự
+/// Hình ảnh là đường dẫn trực tuyến 
+/// Giá là số
+/// Màn hình gồm kí hiệu số và "
+/// Mô tả từ 5-100 chữ
 
 function validateForm() {
   //B1: Lấy thông tin(info) từ form
