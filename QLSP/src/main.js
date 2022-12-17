@@ -193,10 +193,11 @@ function viewProduct(id) {
      document.getElementById("loai").value = result.data.type;
 
       //Thêm button cập nhật cho form
-      var footerEle = document.querySelector(".modal-footer");
-      footerEle.innerHTML = `
+      var footer = document.querySelector(".modal-footer");
+      footer.innerHTML = `
             <button onclick="updateProduct('${result.data.id}')" class="btn btn-success">Cập nhật</button>
             <button
+            onclick="cancelUpdate()"
             id="btnDongCapNhat"
             type="button"
             class="btn btn-danger"
@@ -257,6 +258,13 @@ try {
       console.log(error);
     }
 }
+
+function cancelUpdate() {
+  document.querySelector("#myModal .close").click();
+  document.getElementById("form").reset();
+
+}
+
 
 
 
