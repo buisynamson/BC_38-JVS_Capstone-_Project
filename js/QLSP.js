@@ -206,7 +206,6 @@ function viewProduct(id) {
             Đóng
           </button>
         `;
-        document.getElementById("myModal").reset();
     })
     .catch(function (error) {
       console.log(error);
