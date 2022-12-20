@@ -8,6 +8,11 @@ function fetchListProducts() {
     .then(function (result) {
       console.log(result.data);
       renderTable(result.data);
+      // renderToCart(result.data);
+      updateCart(result.data);
+      removeCart(result.data);
+      changeQuantity(result.data);
+      addCart(result.data);
       setLocalStorage(result.data);
     })
     .catch(function (error) {
@@ -19,17 +24,23 @@ console.log(array);
 function setLocalStorage(mangSP) {
   localStorage.setItem("DSSP", JSON.stringify(mangSP));
 }
+
+function getLocalStorage() {
+  var arr = JSON.parse(localStorage.getItem("DSSP"));
+  return arr;
+}
+
 function renderTable(mangSP) {
   var content = "";
   mangSP.map(function (sp,index) {
     content += `
             <div class="img-products">
                 <img src='${sp.img}'/>
-                <h4 style="margin-top:5px; font-size: 18px">${sp.name}</h4>
+                <h4 class="product-name" style="margin-top:5px; font-size: 18px">${sp.name}</h4>
                 <p class="price" style="margin-top:5px">$${sp.price}</p>
                 <div class="overlay">
                 <p class="description">${sp.desc}</p>
-                <button class="atc-btn" onclick="addToCart()"> Add to cart </button>
+                <button class="atc-btn" data-name="${sp.name}" data-price="${sp.price}"> Add to cart </button>
                 <button class="rm-btn"> More Info </button>
                 </div>
                 </div>
@@ -38,211 +49,162 @@ function renderTable(mangSP) {
   document.getElementById("products").innerHTML = content;
 }
 
+function renderToCart(mangSP) {
+  var item = "";
+  mangSP.map(function (sp,index) {
+    item += `
+    <div class="cart-row">
+    <div class="cart-item cart-column">
+            <img class="cart-item-image" src='${sp.img}'width="100" height="100">
+                <span class="cart-item-title">${sp.name}</span>
+                </div>
+                <span class="cart-price cart-column">${sp.price}</span>
+                <div class="cart-quantity cart-column">
+                    <input class="cart-quantity-input" type="number" value="1">
+                    <button class="btn btn-danger" type="button">Xóa</button>
+                </div>
+            </div>
 
-var shoppingCart = (function() {
-  // =============================
-  // Private methods and propeties
-  // =============================
-  cart = [];
-  
-  // Constructor
-  function Item(name, price, count) {
-    this.name = name;
-    this.price = price;
-    this.count = count;
-  }
-  
-  // Save cart
-  function saveCart() {
-    sessionStorage.setItem('shoppingCart', JSON.stringify(cart));
-  }
-  
-    // Load cart
-  function loadCart() {
-    cart = JSON.parse(sessionStorage.getItem('shoppingCart'));
-  }
-  if (sessionStorage.getItem("shoppingCart") != null) {
-    loadCart();
-  }
-  
-
-  // =============================
-  // Public methods and propeties
-  // =============================
-  var obj = {};
-  
-  // Add to cart
-  obj.addItemToCart = function(name, price, count) {
-    for(var item in cart) {
-      if(cart[item].name === name) {
-        cart[item].count ++;
-        saveCart();
-        return;
-      }
-    }
-    var item = new Item(name, price, count);
-    cart.push(item);
-    saveCart();
-  }
-  // Set count from item
-  obj.setCountForItem = function(name, count) {
-    for(var i in cart) {
-      if (cart[i].name === name) {
-        cart[i].count = count;
-        break;
-      }
-    }
-  };
-  // Remove item from cart
-  obj.removeItemFromCart = function(name) {
-      for(var item in cart) {
-        if(cart[item].name === name) {
-          cart[item].count --;
-          if(cart[item].count === 0) {
-            cart.splice(item, 1);
-          }
-          break;
-        }
-    }
-    saveCart();
-  }
-
-  // Remove all items from cart
-  obj.removeItemFromCartAll = function(name) {
-    for(var item in cart) {
-      if(cart[item].name === name) {
-        cart.splice(item, 1);
-        break;
-      }
-    }
-    saveCart();
-  }
-
-  // Clear cart
-  obj.clearCart = function() {
-    cart = [];
-    saveCart();
-  }
-
-  // Count cart 
-  obj.totalCount = function() {
-    var totalCount = 0;
-    for(var item in cart) {
-      totalCount += cart[item].count;
-    }
-    return totalCount;
-  }
-
-  // Total cart
-  obj.totalCart = function() {
-    var totalCart = 0;
-    for(var item in cart) {
-      totalCart += cart[item].price * cart[item].count;
-    }
-    return Number(totalCart.toFixed(2));
-  }
-
-  // List cart
-  obj.listCart = function() {
-    var cartCopy = [];
-    for(i in cart) {
-      item = cart[i];
-      itemCopy = {};
-      for(p in item) {
-        itemCopy[p] = item[p];
-
-      }
-      itemCopy.total = Number(item.price * item.count).toFixed(2);
-      cartCopy.push(itemCopy)
-    }
-    return cartCopy;
-  }
-
-  // cart : Array
-  // Item : Object/Class
-  // addItemToCart : Function
-  // removeItemFromCart : Function
-  // removeItemFromCartAll : Function
-  // clearCart : Function
-  // countCart : Function
-  // totalCart : Function
-  // listCart : Function
-  // saveCart : Function
-  // loadCart : Function
-  return obj;
-})();
-
-
-// *****************************************
-// Triggers / Events
-// ***************************************** 
-// Add item
-$('.add-to-cart').click(function(event) {
-  event.preventDefault();
-  var name = $(this).data('name');
-  var price = Number($(this).data('price'));
-  shoppingCart.addItemToCart(name, price, 1);
-  displayCart();
-});
-
-// Clear items
-$('.clear-cart').click(function() {
-  shoppingCart.clearCart();
-  displayCart();
-});
-
-
-function displayCart() {
-  var cartArray = shoppingCart.listCart();
-  var output = "";
-  for(var i in cartArray) {
-    output += "<tr>"
-      + "<td>" + cartArray[i].name + "</td>" 
-      + "<td>(" + cartArray[i].price + ")</td>"
-      + "<td><div class='input-group'><button class='minus-item input-group-addon btn btn-primary' data-name=" + cartArray[i].name + ">-</button>"
-      + "<input type='number' class='item-count form-control' data-name='" + cartArray[i].name + "' value='" + cartArray[i].count + "'>"
-      + "<button class='plus-item btn btn-primary input-group-addon' data-name=" + cartArray[i].name + ">+</button></div></td>"
-      + "<td><button class='delete-item btn btn-danger' data-name=" + cartArray[i].name + ">X</button></td>"
-      + " = " 
-      + "<td>" + cartArray[i].total + "</td>" 
-      +  "</tr>";
-  }
-  $('.show-cart').html(output);
-  $('.total-cart').html(shoppingCart.totalCart());
-  $('.total-count').html(shoppingCart.totalCount());
+        `;
+  });
+  document.getElementById("showItem").innerHTML = item;
 }
 
-// Delete item button
 
-$('.show-cart').on("click", ".delete-item", function(event) {
-  var name = $(this).data('name')
-  shoppingCart.removeItemFromCartAll(name);
-  displayCart();
-})
+var modal = document.getElementById("cart");
+var btn = document.getElementById("basket");
+var close = document.getElementsByClassName("close")[0];
+// [0] như  thế này bởi vì mỗi close là một html colection nên khi mình muốn lấy giá trị html thì phải thêm [0]. 
+// Nếu có 2 cái component cùng class thì khi [0] nó sẽ hiển thị component 1 còn [1] thì nó sẽ hiển thị component 2.
+var close_footer = document.getElementsByClassName("close-footer")[0];
+var order = document.getElementsByClassName("order")[0];
+
+btn.onclick = function () {
+  modal.style.display = "block";
+}
+close.onclick = function () {
+  modal.style.display = "none";
+}
+close_footer.onclick = function () {
+  modal.style.display = "none";
+}
+order.onclick = function () {
+  alert("Cảm ơn bạn đã thanh toán đơn hàng")
+}
+window.onclick = function (event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
 
 
-// -1
-$('.show-cart').on("click", ".minus-item", function(event) {
-  var name = $(this).data('name')
-  shoppingCart.removeItemFromCart(name);
-  displayCart();
-})
-// +1
-$('.show-cart').on("click", ".plus-item", function(event) {
-  var name = $(this).data('name')
-  shoppingCart.addItemToCart(name);
-  displayCart();
-})
 
-// Item count input
-$('.show-cart').on("change", ".item-count", function(event) {
-   var name = $(this).data('name');
-   var count = Number($(this).val());
-  shoppingCart.setCountForItem(name, count);
-  displayCart();
-});
+function removeCart() {
+var remove_cart = document.getElementsByClassName("btn-danger");
+for (var i = 0; i < remove_cart.length; i++) {
+  var button = remove_cart[i]
+  button.addEventListener("click", function () {
+    var button_remove = event.target
+    button_remove.parentElement.parentElement.remove()
+  })
+}
+}
 
-displayCart();
+
+// update cart 
+function updateCart() {
+  var cart_item = document.getElementsByClassName("cart-items")[0];
+  var cart_rows = cart_item.getElementsByClassName("cart-row");
+  var total = 0;
+  for (var i = 0; i < cart_rows.length; i++) {
+    var cart_row = cart_rows[i]
+    var price_item = cart_row.getElementsByClassName("cart-price ")[0]
+    var quantity_item = cart_row.getElementsByClassName("cart-quantity-input")[0]
+    var price = parseFloat(price_item.innerText)// chuyển một chuổi string sang number để tính tổng tiền.
+    var quantity = quantity_item.value // lấy giá trị trong thẻ input
+    total = total + (price * quantity)
+  }
+  document.getElementsByClassName("cart-total-price")[0].innerText = total + '$'
+  // Thay đổi text = total trong .cart-total-price. Chỉ có một .cart-total-price nên mình sử dụng [0].
+}
+
+
+ // thay đổi số lượng sản phẩm
+ function changeQuantity() {
+ var quantity_input = document.getElementsByClassName("cart-quantity-input");
+ for (var i = 0; i < quantity_input.length; i++) {
+   var input = quantity_input[i];
+   input.addEventListener("change", function (event) {
+     var input = event.target
+     if (isNaN(input.value) || input.value <= 0) {
+       input.value = 1;
+     }
+     updateCart()
+   })
+ }
+}
+ 
+ 
+ // Thêm vào giỏ
+ function addCart() {
+ var add_cart = document.getElementsByClassName("atc-btn");
+ for (var i = 0; i < add_cart.length; i++) {
+   var add = add_cart[i];
+   add.addEventListener("click", function (event) {
+ 
+     var button = event.target;
+     var product = button.parentElement.parentElement;
+     var img = product.parentElement.getElementsByClassName("img-products")[0].src
+     var title = product.getElementsByClassName("product-name")[0].innerText
+     var price = product.getElementsByClassName("price")[0].innerText
+     addItemToCart(title, price, img)
+     // Khi thêm sản phẩm vào giỏ hàng thì sẽ hiển thị modal
+     modal.style.display = "block";
+     
+     updateCart()
+   })
+ }
+}
+ 
+ function addItemToCart(title, price, img) {
+   var cartRow = document.createElement('div')
+   cartRow.classList.add('cart-row')
+   var cartItems = document.getElementsByClassName('cart-items')[0]
+   var cart_title = cartItems.getElementsByClassName('cart-item-title')
+ //   Nếu title của sản phẩm bằng với title mà bạn thêm vao giỏ hàng thì sẽ thông cho user.
+   for (var i = 0; i < cart_title.length; i++) {
+     if (cart_title[i].innerText == title) {
+       alert('Sản Phẩm Đã Có Trong Giỏ Hàng')
+       return
+     }
+   }
+
+   var cartRowContents = `
+   <div class="cart-item cart-column">
+       <img class="cart-item-image" src="${img}" width="100" height="100">
+       <span class="cart-item-title">${title}</span>
+   </div>
+   <span class="cart-price cart-column">${price}</span>
+   <div class="cart-quantity cart-column">
+       <input class="cart-quantity-input" type="number" value="1">
+       <button class="btn btn-danger" type="button">Xóa</button>
+   </div>`
+   cartRow.innerHTML = cartRowContents
+   cartItems.append(cartRow)
+   cartRow.getElementsByClassName('btn-danger')[0].addEventListener('click', function () {
+     var button_remove = event.target
+     button_remove.parentElement.parentElement.remove()
+     updateCart()
+   })
+   cartRow.getElementsByClassName('cart-quantity-input')[0].addEventListener('change', function (event) {
+     var input = event.target
+     if (isNaN(input.value) || input.value <= 0) {
+       input.value = 1;
+     }
+     updateCart()
+   })
+ }
+
 
 
 
