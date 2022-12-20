@@ -72,7 +72,7 @@ function renderTable(mangSP) {
                 </div>
                 </td>
                 <td>${sp.name}</td>
-                <td>$${sp.price}</td>          
+                <td>${sp.price} $</td>          
                 <td>${sp.screen}</td> 
                 <td>${sp.backCamera}</td> 
                 <td>${sp.frontCamera}</td> 

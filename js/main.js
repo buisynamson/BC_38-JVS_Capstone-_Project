@@ -8,9 +8,8 @@ function fetchListProducts() {
     .then(function (result) {
       console.log(result.data);
       renderTable(result.data);
-      // renderToCart(result.data);
-      updateCart(result.data);
       removeCart(result.data);
+      updateCart(result.data);
       changeQuantity(result.data);
       addCart(result.data);
       setLocalStorage(result.data);
@@ -19,7 +18,6 @@ function fetchListProducts() {
       console.log(error);
     });
 }
-console.log(array);
 
 function setLocalStorage(mangSP) {
   localStorage.setItem("DSSP", JSON.stringify(mangSP));
@@ -35,9 +33,9 @@ function renderTable(mangSP) {
   mangSP.map(function (sp,index) {
     content += `
             <div class="img-products">
-                <img src='${sp.img}'/>
+                <img class="img-prd" src='${sp.img}'/>
                 <h4 class="product-name" style="margin-top:5px; font-size: 18px">${sp.name}</h4>
-                <p class="price" style="margin-top:5px">$${sp.price}</p>
+                <p class="price" style="margin-top:5px">${sp.price} $</p>
                 <div class="overlay">
                 <p class="description">${sp.desc}</p>
                 <button class="atc-btn" data-name="${sp.name}" data-price="${sp.price}"> Add to cart </button>
@@ -49,26 +47,26 @@ function renderTable(mangSP) {
   document.getElementById("products").innerHTML = content;
 }
 
-function renderToCart(mangSP) {
-  var item = "";
-  mangSP.map(function (sp,index) {
-    item += `
-    <div class="cart-row">
-    <div class="cart-item cart-column">
-            <img class="cart-item-image" src='${sp.img}'width="100" height="100">
-                <span class="cart-item-title">${sp.name}</span>
-                </div>
-                <span class="cart-price cart-column">${sp.price}</span>
-                <div class="cart-quantity cart-column">
-                    <input class="cart-quantity-input" type="number" value="1">
-                    <button class="btn btn-danger" type="button">Xóa</button>
-                </div>
-            </div>
+// function renderToCart(mangSP) {
+//   var item = "";
+//   mangSP.map(function (sp,index) {
+//     item += `
+//     <div class="cart-row">
+//     <div class="cart-item cart-column">
+//             <img class="cart-item-image" src='${sp.img}'width="100" height="100">
+//                 <span class="cart-item-title">${sp.name}</span>
+//                 </div>
+//                 <span class="cart-price cart-column">${sp.price}</span>
+//                 <div class="cart-quantity cart-column">
+//                     <input class="cart-quantity-input" type="number" value="1">
+//                     <button class="btn btn-danger" type="button">Xóa</button>
+//                 </div>
+//             </div>
 
-        `;
-  });
-  document.getElementById("showItem").innerHTML = item;
-}
+//         `;
+//   });
+//   document.getElementById("showItem").innerHTML = item;
+// }
 
 
 var modal = document.getElementById("cart");
@@ -118,12 +116,13 @@ function updateCart() {
   var total = 0;
   for (var i = 0; i < cart_rows.length; i++) {
     var cart_row = cart_rows[i]
-    var price_item = cart_row.getElementsByClassName("cart-price ")[0]
+    var price_item = cart_row.getElementsByClassName("cart-price")[0]
     var quantity_item = cart_row.getElementsByClassName("cart-quantity-input")[0]
     var price = parseFloat(price_item.innerText)// chuyển một chuổi string sang number để tính tổng tiền.
     var quantity = quantity_item.value // lấy giá trị trong thẻ input
     total = total + (price * quantity)
   }
+  console.log(total);
   document.getElementsByClassName("cart-total-price")[0].innerText = total + '$'
   // Thay đổi text = total trong .cart-total-price. Chỉ có một .cart-total-price nên mình sử dụng [0].
 }
@@ -154,7 +153,7 @@ function updateCart() {
  
      var button = event.target;
      var product = button.parentElement.parentElement;
-     var img = product.parentElement.getElementsByClassName("img-products")[0].src
+     var img = product.getElementsByClassName("img-prd")[0].src
      var title = product.getElementsByClassName("product-name")[0].innerText
      var price = product.getElementsByClassName("price")[0].innerText
      addItemToCart(title, price, img)
@@ -177,6 +176,7 @@ function updateCart() {
        alert('Sản Phẩm Đã Có Trong Giỏ Hàng')
        return
      }
+
    }
 
    var cartRowContents = `
