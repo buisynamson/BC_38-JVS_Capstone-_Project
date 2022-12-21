@@ -8,10 +8,7 @@ function fetchListProducts() {
     .then(function (result) {
       console.log(result.data);
       renderTable(result.data);
-      removeCart(result.data);
-      updateCart(result.data);
-      changeQuantity(result.data);
-      // numberInCart (result.data);
+      clearCart(result.data);
       addCart(result.data);
       setLocalStorage(result.data);
     })
@@ -48,28 +45,6 @@ function renderTable(mangSP) {
   document.getElementById("products").innerHTML = content;
 }
 
-// function renderToCart(mangSP) {
-//   var item = "";
-//   mangSP.map(function (sp,index) {
-//     item += `
-//     <div class="cart-row">
-//     <div class="cart-item cart-column">
-//             <img class="cart-item-image" src='${sp.img}'width="100" height="100">
-//                 <span class="cart-item-title">${sp.name}</span>
-//                 </div>
-//                 <span class="cart-price cart-column">${sp.price}</span>
-//                 <div class="cart-quantity cart-column">
-//                     <input class="cart-quantity-input" type="number" value="1">
-//                     <button class="btn btn-danger" type="button">Xóa</button>
-//                 </div>
-//             </div>
-
-//         `;
-//   });
-//   document.getElementById("showItem").innerHTML = item;
-// }
-
-
 var modal = document.getElementById("cart");
 var btn = document.getElementById("basket");
 var close = document.getElementsByClassName("close")[0];
@@ -105,30 +80,63 @@ window.onclick = function (event) {
 
 
 
-function clearCart() {
-  var items = document.getElementsByClassName("cart-items")[0];
-  var rows = items.getElementsByClassName("cart-row");
-  for (var i = 0; i < rows.length; i++) {
-  var row = rows[i];
-  var nullArr=[];
-  row= nullArr;
-  }
-  console.log(row);
-  console.log(rows);
-  updateCart()
-  return row;
-}
-
-// clear_btn.onclick = function () {
-//   var clear={};
+// function clearCart() {
 //   var items = document.getElementsByClassName("cart-items")[0];
-//     console.log(items);
-//     items= clear;
-//     console.log(items);
-//     updateCart()
+//   var rows = items.getElementsByClassName("cart-row");
+//   for (var i = 0; i < rows.length; i++) {
+//   var row = rows[i];
+//   var nullArr=[];
+//   row= nullArr;
+//   updateCart();
+//   getLocalStorage();
+//   }
+//   console.log(row);
 // }
 
-function removeCart() {
+// function renderToCart(mangSP) {
+//   var item = "";
+//   mangSP.map(function (sp,index) {
+//     item += `
+//     <div class="cart-row">
+//     <div class="cart-item cart-column">
+//             <img class="cart-item-image" src='${sp.img}'width="100" height="100">
+//                 <span class="cart-item-title">${sp.name}</span>
+//                 </div>
+//                 <span class="cart-price cart-column">${sp.price}</span>
+//                 <div class="cart-quantity cart-column">
+//                     <input class="cart-quantity-input" type="number" value="1">
+//                     <button class="btn btn-danger" type="button">Xóa</button>
+//                 </div>
+//             </div>
+
+//         `;
+//   });
+//   document.getElementById("showItem").innerHTML = item;
+// }
+
+
+function clearCart() {
+  arr=[];
+  var items = document.getElementsByClassName("cart-items")[0];
+  items =arr;
+  console.log(items);
+  updateCart();
+  getLocalStorage();
+}
+
+
+
+  
+
+
+// let clearCart = () => {
+//   arr = [];
+//   updateCart();
+//   getLocalStorage();
+// };
+
+
+
 var remove_cart = document.getElementsByClassName("btn-danger");
 for (var i = 0; i < remove_cart.length; i++) {
   var button = remove_cart[i]
@@ -136,8 +144,7 @@ for (var i = 0; i < remove_cart.length; i++) {
     var button_remove = event.target
     button_remove.parentElement.parentElement.remove()
   })
-  updateCart()
-}
+  updateCart();
 }
 
 
@@ -145,7 +152,6 @@ for (var i = 0; i < remove_cart.length; i++) {
 function updateCart() {
   var cart_item = document.getElementsByClassName("cart-items")[0];
   var cart_rows = cart_item.getElementsByClassName("cart-row");
-  console.log(cart_rows);
   var total = 0;
   var quantityInCart=0;
   for (var i = 0; i < cart_rows.length; i++) {
@@ -179,7 +185,7 @@ function updateCart() {
 
 
  // tha { số lượng sản phẩm
- function changeQuantity() {
+
  var quantity_input = document.getElementsByClassName("cart-quantity-input");
  for (var i = 0; i < quantity_input.length; i++) {
    var input = quantity_input[i];
@@ -191,7 +197,6 @@ function updateCart() {
      updateCart()
    })
  }
-}
  
  
  // Thêm vào giỏ
@@ -244,7 +249,9 @@ function updateCart() {
     })
    }
 
-   var cartRowContents = `
+  
+
+   var cartRowContents =`
    <div class="cart-item cart-column">
        <img class="cart-item-image" src="${img}" width="100" height="100">
        <span class="cart-item-title">${title}</span>
@@ -262,15 +269,6 @@ function updateCart() {
      button_remove.parentElement.parentElement.remove()
      updateCart()
    })
-
-  //  cartRow.getElementsByClassName("clear-cart")[0].addEventListener('click', function () {
-  //   var rows = items.getElementsByClassName("cart-row");
-  //   console.log(rows);
-  //   var nullArr=[];
-  //   rows= nullArr;
-  //   console.log(rows);
-  //   updateCart()
-  // })
 
 
    cartRow.getElementsByClassName('cart-quantity-input')[0].addEventListener('change', function (event) {
