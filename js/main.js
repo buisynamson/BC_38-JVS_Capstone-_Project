@@ -11,6 +11,7 @@ function fetchListProducts() {
       removeCart(result.data);
       updateCart(result.data);
       changeQuantity(result.data);
+      // numberInCart (result.data);
       addCart(result.data);
       setLocalStorage(result.data);
     })
@@ -74,7 +75,7 @@ var btn = document.getElementById("basket");
 var close = document.getElementsByClassName("close")[0];
 // [0] như  thế này bởi vì mỗi close là một html colection nên khi mình muốn lấy giá trị html thì phải thêm [0]. 
 // Nếu có 2 cái component cùng class thì khi [0] nó sẽ hiển thị component 1 còn [1] thì nó sẽ hiển thị component 2.
-var close_footer = document.getElementsByClassName("close-footer")[0];
+// var clear_btn = document.getElementsByClassName("clear-cart")[0];
 var order = document.getElementsByClassName("order")[0];
 
 btn.onclick = function () {
@@ -83,19 +84,49 @@ btn.onclick = function () {
 close.onclick = function () {
   modal.style.display = "none";
 }
-close_footer.onclick = function () {
-  modal.style.display = "none";
-}
 order.onclick = function () {
-  alert("Cảm ơn bạn đã thanh toán đơn hàng")
+  // alert("Bạn đã thanh toán thành công!")
+  Swal.fire({
+    position: 'center',
+    icon: 'success',
+    title: 'Thanh toán thành công!',
+    showConfirmButton: false,
+    timer: 1500
+  })
+  modal.style.display = "block";
 }
+
 window.onclick = function (event) {
   if (event.target == modal) {
     modal.style.display = "none";
+
   }
 }
 
 
+
+function clearCart() {
+  var items = document.getElementsByClassName("cart-items")[0];
+  var rows = items.getElementsByClassName("cart-row");
+  for (var i = 0; i < rows.length; i++) {
+  var row = rows[i];
+  var nullArr=[];
+  row= nullArr;
+  }
+  console.log(row);
+  console.log(rows);
+  updateCart()
+  return row;
+}
+
+// clear_btn.onclick = function () {
+//   var clear={};
+//   var items = document.getElementsByClassName("cart-items")[0];
+//     console.log(items);
+//     items= clear;
+//     console.log(items);
+//     updateCart()
+// }
 
 function removeCart() {
 var remove_cart = document.getElementsByClassName("btn-danger");
@@ -105,6 +136,7 @@ for (var i = 0; i < remove_cart.length; i++) {
     var button_remove = event.target
     button_remove.parentElement.parentElement.remove()
   })
+  updateCart()
 }
 }
 
@@ -113,22 +145,40 @@ for (var i = 0; i < remove_cart.length; i++) {
 function updateCart() {
   var cart_item = document.getElementsByClassName("cart-items")[0];
   var cart_rows = cart_item.getElementsByClassName("cart-row");
+  console.log(cart_rows);
   var total = 0;
+  var quantityInCart=0;
   for (var i = 0; i < cart_rows.length; i++) {
     var cart_row = cart_rows[i]
     var price_item = cart_row.getElementsByClassName("cart-price")[0]
     var quantity_item = cart_row.getElementsByClassName("cart-quantity-input")[0]
     var price = parseFloat(price_item.innerText)// chuyển một chuổi string sang number để tính tổng tiền.
     var quantity = quantity_item.value // lấy giá trị trong thẻ input
+   
     total = total + (price * quantity)
+    quantityInCart = quantity;
   }
-  console.log(total);
   document.getElementsByClassName("cart-total-price")[0].innerText = total + '$'
+  document.getElementsByClassName("total-count")[0].innerText = quantityInCart;
+  
   // Thay đổi text = total trong .cart-total-price. Chỉ có một .cart-total-price nên mình sử dụng [0].
 }
 
 
- // thay đổi số lượng sản phẩm
+// function numberInCart () {
+//   var quantityInCart=0;
+//   var quantityPrd = document.getElementsByClassName("cart-quantity");
+//   for (i=0; i< quantityPrd.length; i++) {
+//     quantityInCart += quantityPrd[i];
+//   }
+//   document.getElementsByClassName("total-count")[0].innerText = quantityInCart;
+//   document.getElementsByClassName("total-count")[0].innerText = quantityInCart;
+// updateCart()
+// }
+
+
+
+ // tha { số lượng sản phẩm
  function changeQuantity() {
  var quantity_input = document.getElementsByClassName("cart-quantity-input");
  for (var i = 0; i < quantity_input.length; i++) {
@@ -158,12 +208,16 @@ function updateCart() {
      var price = product.getElementsByClassName("price")[0].innerText
      addItemToCart(title, price, img)
      // Khi thêm sản phẩm vào giỏ hàng thì sẽ hiển thị modal
-     modal.style.display = "block";
-     
+    //  modal.style.display = "block";
      updateCart()
    })
  }
 }
+
+
+// function addNumtoCart() {
+//   var count =
+// }
  
  function addItemToCart(title, price, img) {
    var cartRow = document.createElement('div')
@@ -172,11 +226,22 @@ function updateCart() {
    var cart_title = cartItems.getElementsByClassName('cart-item-title')
  //   Nếu title của sản phẩm bằng với title mà bạn thêm vao giỏ hàng thì sẽ thông cho user.
    for (var i = 0; i < cart_title.length; i++) {
-     if (cart_title[i].innerText == title) {
-       alert('Sản Phẩm Đã Có Trong Giỏ Hàng')
-       return
-     }
 
+     if (cart_title[i].innerText == title) {
+      //  alert('Sản Phẩm Đã Có Trong Giỏ Hàng')
+       Swal.fire({
+        icon: 'error',
+        text: 'Sản Phẩm Đã Có Trong Giỏ Hàng!'
+      })
+       return
+     } 
+     Swal.fire({
+      position: 'center',
+      icon: 'success',
+      title: 'Đã Thêm Vào Giỏ Hàng!',
+      showConfirmButton: false,
+      timer: 1200
+    })
    }
 
    var cartRowContents = `
@@ -190,12 +255,24 @@ function updateCart() {
        <button class="btn btn-danger" type="button">Xóa</button>
    </div>`
    cartRow.innerHTML = cartRowContents
+  
    cartItems.append(cartRow)
    cartRow.getElementsByClassName('btn-danger')[0].addEventListener('click', function () {
      var button_remove = event.target
      button_remove.parentElement.parentElement.remove()
      updateCart()
    })
+
+  //  cartRow.getElementsByClassName("clear-cart")[0].addEventListener('click', function () {
+  //   var rows = items.getElementsByClassName("cart-row");
+  //   console.log(rows);
+  //   var nullArr=[];
+  //   rows= nullArr;
+  //   console.log(rows);
+  //   updateCart()
+  // })
+
+
    cartRow.getElementsByClassName('cart-quantity-input')[0].addEventListener('change', function (event) {
      var input = event.target
      if (isNaN(input.value) || input.value <= 0) {
@@ -203,7 +280,8 @@ function updateCart() {
      }
      updateCart()
    })
- }
+  }
+ 
 
 
 
