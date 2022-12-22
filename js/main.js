@@ -94,31 +94,6 @@ function clearCart() {
   getLocalStorage();
   }
 
-// function renderToCart(mangSP) {
-//   var item = "";
-//   mangSP.map(function (sp,index) {
-//     item += `
-//     <div class="cart-row">
-//     <div class="cart-item cart-column">
-//             <img class="cart-item-image" src='${sp.img}'width="100" height="100">
-//                 <span class="cart-item-title">${sp.name}</span>
-//                 </div>
-//                 <span class="cart-price cart-column">${sp.price}</span>
-//                 <div class="cart-quantity cart-column">
-//                     <input class="cart-quantity-input" type="number" value="1">
-//                     <button class="btn btn-danger" type="button">Xóa</button>
-//                 </div>
-//             </div>
-
-//         `;
-//   });
-//   document.getElementById("showItem").innerHTML = item;
-// }
-
-
-
-
-
 // var remove_cart = document.getElementsByClassName("btn-danger");
 // for (var i = 0; i < remove_cart.length; i++) {
 //   var button = remove_cart[i]
@@ -131,7 +106,6 @@ function clearCart() {
 
 
 // update cart 
-
 
 function updateCart() {
   var cart_item = document.getElementsByClassName("cart-items")[0];
