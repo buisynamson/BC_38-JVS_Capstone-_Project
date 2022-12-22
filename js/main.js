@@ -8,7 +8,7 @@ function fetchListProducts() {
     .then(function (result) {
       console.log(result.data);
       renderTable(result.data);
-      clearCart(result.data);
+      // clearCart(result.data);
       addCart(result.data);
       setLocalStorage(result.data);
     })
@@ -17,18 +17,18 @@ function fetchListProducts() {
     });
 }
 
-function setLocalStorage(mangSP) {
-  localStorage.setItem("DSSP", JSON.stringify(mangSP));
+function setLocalStorage(product) {
+  localStorage.setItem("SP", JSON.stringify(product));
 }
 
 function getLocalStorage() {
-  var arr = JSON.parse(localStorage.getItem("DSSP"));
+  var arr = JSON.parse(localStorage.getItem("SP"));
   return arr;
 }
 
-function renderTable(mangSP) {
+function renderTable(product) {
   var content = "";
-  mangSP.map(function (sp,index) {
+  product.map(function (sp,index) {
     content += `
             <div class="img-products">
                 <img class="img-prd" src='${sp.img}'/>
@@ -48,9 +48,9 @@ function renderTable(mangSP) {
 var modal = document.getElementById("cart");
 var btn = document.getElementById("basket");
 var close = document.getElementsByClassName("close")[0];
-// [0] như  thế này bởi vì mỗi close là một html colection nên khi mình muốn lấy giá trị html thì phải thêm [0]. 
-// Nếu có 2 cái component cùng class thì khi [0] nó sẽ hiển thị component 1 còn [1] thì nó sẽ hiển thị component 2.
-// var clear_btn = document.getElementsByClassName("clear-cart")[0];
+// // [0] như  thế này bởi vì mỗi close là một html colection nên khi mình muốn lấy giá trị html thì phải thêm [0]. 
+// // Nếu có 2 cái component cùng class thì khi [0] nó sẽ hiển thị component 1 còn [1] thì nó sẽ hiển thị component 2.
+// // var clear_btn = document.getElementsByClassName("clear-cart")[0];
 var order = document.getElementsByClassName("order")[0];
 
 btn.onclick = function () {
@@ -69,6 +69,11 @@ order.onclick = function () {
     timer: 1500
   })
   modal.style.display = "block";
+  var cartItems = document.getElementsByClassName('cart-items')[0]
+  while (cartItems.hasChildNodes()) {
+      cartItems.removeChild(cartItems.firstChild)
+  updateCart()
+}
 }
 
 window.onclick = function (event) {
@@ -80,18 +85,14 @@ window.onclick = function (event) {
 
 
 
-// function clearCart() {
-//   var items = document.getElementsByClassName("cart-items")[0];
-//   var rows = items.getElementsByClassName("cart-row");
-//   for (var i = 0; i < rows.length; i++) {
-//   var row = rows[i];
-//   var nullArr=[];
-//   row= nullArr;
-//   updateCart();
-//   getLocalStorage();
-//   }
-//   console.log(row);
-// }
+function clearCart() {
+  var items = document.getElementsByClassName("cart-items")[0];
+  while (items.hasChildNodes()) {
+    items.removeChild(items.firstChild);
+  }
+  updateCart();
+  getLocalStorage();
+  }
 
 // function renderToCart(mangSP) {
 //   var item = "";
@@ -115,40 +116,23 @@ window.onclick = function (event) {
 // }
 
 
-function clearCart() {
-  arr=[];
-  var items = document.getElementsByClassName("cart-items")[0];
-  items =arr;
-  console.log(items);
-  updateCart();
-  getLocalStorage();
-}
 
 
 
-  
-
-
-// let clearCart = () => {
-//   arr = [];
+// var remove_cart = document.getElementsByClassName("btn-danger");
+// for (var i = 0; i < remove_cart.length; i++) {
+//   var button = remove_cart[i]
+//   button.addEventListener("click", function () {
+//     var button_remove = event.target
+//     button_remove.parentElement.parentElement.remove()
+//   })
 //   updateCart();
-//   getLocalStorage();
-// };
-
-
-
-var remove_cart = document.getElementsByClassName("btn-danger");
-for (var i = 0; i < remove_cart.length; i++) {
-  var button = remove_cart[i]
-  button.addEventListener("click", function () {
-    var button_remove = event.target
-    button_remove.parentElement.parentElement.remove()
-  })
-  updateCart();
-}
+// }
 
 
 // update cart 
+
+
 function updateCart() {
   var cart_item = document.getElementsByClassName("cart-items")[0];
   var cart_rows = cart_item.getElementsByClassName("cart-row");
@@ -166,40 +150,28 @@ function updateCart() {
   }
   document.getElementsByClassName("cart-total-price")[0].innerText = total + '$'
   document.getElementsByClassName("total-count")[0].innerText = quantityInCart;
-  
-  // Thay đổi text = total trong .cart-total-price. Chỉ có một .cart-total-price nên mình sử dụng [0].
 }
+  
+// Thay đổi text = total trong .cart-total-price. Chỉ có một .cart-total-price nên mình sử dụng [0].
 
+ // thay số lượng sản phẩm
 
-// function numberInCart () {
-//   var quantityInCart=0;
-//   var quantityPrd = document.getElementsByClassName("cart-quantity");
-//   for (i=0; i< quantityPrd.length; i++) {
-//     quantityInCart += quantityPrd[i];
-//   }
-//   document.getElementsByClassName("total-count")[0].innerText = quantityInCart;
-//   document.getElementsByClassName("total-count")[0].innerText = quantityInCart;
-// updateCart()
-// }
-
-
-
- // tha { số lượng sản phẩm
-
- var quantity_input = document.getElementsByClassName("cart-quantity-input");
- for (var i = 0; i < quantity_input.length; i++) {
-   var input = quantity_input[i];
-   input.addEventListener("change", function (event) {
-     var input = event.target
-     if (isNaN(input.value) || input.value <= 0) {
-       input.value = 1;
-     }
-     updateCart()
-   })
- }
+//  var quantity_input = document.getElementsByClassName("cart-quantity-input");
+//  for (var i = 0; i < quantity_input.length; i++) {
+//    var input = quantity_input[i];
+//    input.addEventListener("change", function (event) {
+//      var input = event.target
+//      if (isNaN(input.value) || input.value <= 0) {
+//        input.value = 1;
+//      }
+//      updateCart()
+//    })
+//  }
  
  
  // Thêm vào giỏ
+
+
  function addCart() {
  var add_cart = document.getElementsByClassName("atc-btn");
  for (var i = 0; i < add_cart.length; i++) {
@@ -213,16 +185,14 @@ function updateCart() {
      var price = product.getElementsByClassName("price")[0].innerText
      addItemToCart(title, price, img)
      // Khi thêm sản phẩm vào giỏ hàng thì sẽ hiển thị modal
-    //  modal.style.display = "block";
+    //  modal.style.display = "block"
+    
      updateCart()
    })
  }
 }
 
 
-// function addNumtoCart() {
-//   var count =
-// }
  
  function addItemToCart(title, price, img) {
    var cartRow = document.createElement('div')
@@ -239,7 +209,7 @@ function updateCart() {
         text: 'Sản Phẩm Đã Có Trong Giỏ Hàng!'
       })
        return
-     } 
+     } else {
      Swal.fire({
       position: 'center',
       icon: 'success',
@@ -247,6 +217,7 @@ function updateCart() {
       showConfirmButton: false,
       timer: 1200
     })
+  }
    }
 
   
