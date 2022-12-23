@@ -105,7 +105,12 @@ function clearCart() {
 // }
 
 
-// update cart 
+/* update Cart
+
++ Tính tổng giá tiền sản phẩm => in ra Total Price
++ Tính tổng số sản phẩm trong giỏ hàng => in ra total count
+*/
+
 
 function updateCart() {
   var cart_item = document.getElementsByClassName("cart-items")[0];
@@ -117,10 +122,9 @@ function updateCart() {
     var price_item = cart_row.getElementsByClassName("cart-price")[0]
     var quantity_item = cart_row.getElementsByClassName("cart-quantity-input")[0]
     var price = parseFloat(price_item.innerText)// chuyển một chuổi string sang number để tính tổng tiền.
-    var quantity = quantity_item.value // lấy giá trị trong thẻ input
-   
+    var quantity = parseInt (quantity_item.value)// lấy giá trị trong thẻ input
     total = total + (price * quantity)
-    quantityInCart = quantity;
+    quantityInCart +=  quantity;
   }
   document.getElementsByClassName("cart-total-price")[0].innerText = total + '$'
   document.getElementsByClassName("total-count")[0].innerText = quantityInCart;
@@ -142,10 +146,15 @@ function updateCart() {
 //    })
 //  }
  
+
+function showCartNum() {
+  
+} 
+
+
  
  // Thêm vào giỏ
-
-
+ 
  function addCart() {
  var add_cart = document.getElementsByClassName("atc-btn");
  for (var i = 0; i < add_cart.length; i++) {
