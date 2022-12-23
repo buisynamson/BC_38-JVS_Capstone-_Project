@@ -1,14 +1,14 @@
 // Variables
-const array = new SanPhamService();
+const productSer = new SanPhamService();
 
+// supFilterType("typeOption");
 fetchListProducts();
 function fetchListProducts() {
-  array
+  productSer
     .getList()
     .then(function (result) {
       console.log(result.data);
       renderTable(result.data);
-      // clearCart(result.data);
       addCart(result.data);
       setLocalStorage(result.data);
     })
@@ -44,6 +44,26 @@ function renderTable(product) {
   });
   document.getElementById("products").innerHTML = content;
 }
+
+function filterProduct() {
+  var prdArr = getLocalStorage();
+  var res = [];
+  var type = document.getElementById("typeOption").value;
+  if (type === "0") {
+    renderTable(prdArr);
+    return;
+  }
+  for (var i = 0; i < prdArr.length; i++) {
+    var productType = prdArr[i].type;
+    console.log(productType);
+    if (type.toLowerCase() === productType.toLowerCase()) {
+      res.push(prdArr[i]);
+    }
+  }
+
+  renderTable(res);
+}
+
 
 var modal = document.getElementById("cart");
 var btn = document.getElementById("basket");
@@ -84,6 +104,7 @@ window.onclick = function (event) {
 }
 
 
+// clear cart
 
 function clearCart() {
   var items = document.getElementsByClassName("cart-items")[0];
@@ -146,14 +167,7 @@ function updateCart() {
 //    })
 //  }
  
-
-function showCartNum() {
-  
-} 
-
-
- 
- // Thêm vào giỏ
+ // add to Cart
  
  function addCart() {
  var add_cart = document.getElementsByClassName("atc-btn");

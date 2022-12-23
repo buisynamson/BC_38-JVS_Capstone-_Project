@@ -4,7 +4,7 @@
  * 
  */
 
-function SanPham(id, name,price, screen, backCamera, frontCamera, img, desc, type, count){
+function SanPham(id, name,price, screen, backCamera, frontCamera, img, desc, type){
   //Thuộc tính
   this.id= id;
   this.name = name;
@@ -15,7 +15,7 @@ function SanPham(id, name,price, screen, backCamera, frontCamera, img, desc, typ
   this.img= img;
   this.desc= desc;
   this.type = type;
-  this.count = count;
+
 
 
 }

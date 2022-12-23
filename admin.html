@@ -40,7 +40,7 @@
       <form class="form-inline my-2 my-lg-0">
         <input id="inputTK" class="form-control mr-sm-2" type="text" placeholder="Nhập tên sản phẩm"
           aria-label="Recipient's username" aria-describedby="basic-addon2">
-        <button id="search" class="btn btn-success my-2 my-sm-0" type="button">Tìm</button>
+        <button id="search" class="btn btn-success my-2 my-sm-0" type="button">Tìm Sản Phẩm</button>
       </form>
     </div>
   </nav>
@@ -70,24 +70,16 @@
               </button>
               <!-- END BUTTON THÊM MỚI -->
             </div>
-            <!-- BEGIN TÌM KIẾM -->
-            <!-- <div class="col-md-4">
-                <div class="input-group mb-3">
-                  <input
-                    id="inputTK"
-                    type="text"
-                    class="form-control"
-                    placeholder="Nhập từ khóa"
-                    aria-label="Recipient's username"
-                    aria-describedby="basic-addon2"
-                  />
-                  <div class="input-group-append">
-                    <span class="input-group-text" id="search"
-                      ><i class="fa fa-search"></i
-                    ></span>
-                  </div>
-                </div> -->
-            <!-- END TÌM KIẾM -->
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <div class=" form-group d-flex">
+                <span class="input-group-text" id="basic-addon1"><i class="fa fa-filter" aria-hidden="true"></i></span>
+                <select name="" id="typeOption" class="form-control ml-2" onchange="filterProduct()" >
+                  <option value="0">Điện Thoại</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
         <div class="clear-fix"></div>
@@ -139,7 +131,7 @@
               <form id="form" role="form">
               <div class="form-group">
                 <label>ID</label>
-                <input id="id" class="form-control" placeholder="Nhập vào ID" />
+                <input id="id" class="form-control" placeholder="Nhập vào ID: (không bắt buộc)" />
               </div>
               <div class="form-group">
                 <label>Tên Sản Phẩm</label>
@@ -198,7 +190,7 @@
                     <option>Oppo</option>
                   </select>
 
-                  <span class="sp-thongbao font-italic text-danger" id="tbMota"></span>
+                  <span class="sp-thongbao font-italic text-danger" id="tbType"></span>
                 </div>
               </div>
             </form>
@@ -233,6 +225,7 @@
 
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="./js/filter.js"></script>
   <script src="./js/model/SanPham.js"></script>
   <script src="./js/model/SanPhamService.js"></script>
   <script src="./js/QLSP.js"></script>
