@@ -10,7 +10,7 @@
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
   <!-- link CSS -->
-  <link href="css/styles.css" rel="stylesheet" />
+  <link href="./css/styles.css" rel="stylesheet" />
 
   <link rel="preconnect" href="https://fonts.gstatic.com" />
   <link href="https://fonts.googleapis.com/css2?family=Quantico&family=Roboto&family=Varela+Round&display=swap"
@@ -41,16 +41,16 @@
         <span class="search"><i class="fas fa-search"></i><input type="search" id="search-input" name="search"
             placeholder="Search" /></span>
             <span class="filter">
-              <div class=" form-group d-flex">
+              <div class=" form-group d-flex mt-3">
                   <span class="input-group-text" id="basic-addon1"><i class="fa fa-filter" aria-hidden="true"></i></span>
-                  <select name="" id="typeOption" class="form-control ml-2" onchange="filterProduct()" >
+                  <select name="" id="mobileSelect" class="form-control" onchange="filterProduct()" >
                     <option value="0">Điện Thoại</option>
                   </select>
                 </div>
             </span>
         <span class="user-wrapper">
           <button id="basket" type="button" class="btn btn-success" data-toggle="modal" data-target="#cart">
-            <i class="fa-solid fa-cart-shopping"></i>
+            <i class="fa fa-shopping-cart" aria-hidden="true"></i>
             <span class="total-count"> 0 </span>
           </button>
         </span>

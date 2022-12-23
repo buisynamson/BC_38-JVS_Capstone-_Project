@@ -1,7 +1,7 @@
 // Variables
 const productSer = new SanPhamService();
 
-// supFilterType("typeOption");
+supFilterType("mobileSelect");
 fetchListProducts();
 function fetchListProducts() {
   productSer
@@ -48,23 +48,25 @@ function renderTable(product) {
 function filterProduct() {
   var prdArr = getLocalStorage();
   var res = [];
-  var type = document.getElementById("typeOption").value;
+  var type = document.getElementById("mobileSelect").value;
   if (type === "0") {
     renderTable(prdArr);
+    addCart();
     return;
   }
   for (var i = 0; i < prdArr.length; i++) {
     var productType = prdArr[i].type;
-    console.log(productType);
     if (type.toLowerCase() === productType.toLowerCase()) {
       res.push(prdArr[i]);
     }
   }
-
   renderTable(res);
+ addCart();
+ updateCart();
+ 
 }
 
-
+// set up model + button
 var modal = document.getElementById("cart");
 var btn = document.getElementById("basket");
 var close = document.getElementsByClassName("close")[0];
@@ -80,7 +82,6 @@ close.onclick = function () {
   modal.style.display = "none";
 }
 order.onclick = function () {
-  // alert("Bạn đã thanh toán thành công!")
   Swal.fire({
     position: 'center',
     icon: 'success',
@@ -103,7 +104,6 @@ window.onclick = function (event) {
   }
 }
 
-
 // clear cart
 
 function clearCart() {
@@ -112,19 +112,7 @@ function clearCart() {
     items.removeChild(items.firstChild);
   }
   updateCart();
-  getLocalStorage();
   }
-
-// var remove_cart = document.getElementsByClassName("btn-danger");
-// for (var i = 0; i < remove_cart.length; i++) {
-//   var button = remove_cart[i]
-//   button.addEventListener("click", function () {
-//     var button_remove = event.target
-//     button_remove.parentElement.parentElement.remove()
-//   })
-//   updateCart();
-// }
-
 
 /* update Cart
 
@@ -149,23 +137,8 @@ function updateCart() {
   }
   document.getElementsByClassName("cart-total-price")[0].innerText = total + '$'
   document.getElementsByClassName("total-count")[0].innerText = quantityInCart;
-}
   
-// Thay đổi text = total trong .cart-total-price. Chỉ có một .cart-total-price nên mình sử dụng [0].
-
- // thay số lượng sản phẩm
-
-//  var quantity_input = document.getElementsByClassName("cart-quantity-input");
-//  for (var i = 0; i < quantity_input.length; i++) {
-//    var input = quantity_input[i];
-//    input.addEventListener("change", function (event) {
-//      var input = event.target
-//      if (isNaN(input.value) || input.value <= 0) {
-//        input.value = 1;
-//      }
-//      updateCart()
-//    })
-//  }
+}
  
  // add to Cart
  
@@ -238,7 +211,6 @@ function updateCart() {
      updateCart()
    })
 
-
    cartRow.getElementsByClassName('cart-quantity-input')[0].addEventListener('change', function (event) {
      var input = event.target
      if (isNaN(input.value) || input.value <= 0) {
@@ -248,18 +220,3 @@ function updateCart() {
    })
   }
  
-
-
-
-
-
-
-// Function for mobile menu
-const hamburgerMenu = () => {
-  var x = document.getElementById("myLinks");
-  if (x.style.display === "block") {
-    x.style.display = "none";
-  } else {
-    x.style.display = "block";
-  }
-};
