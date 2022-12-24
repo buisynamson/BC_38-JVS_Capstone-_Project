@@ -9,6 +9,7 @@ function fetchListProducts() {
     .then(function (result) {
       console.log(result.data);
       renderTable(result.data);
+      // searchPrd(result.data);
       addCart(result.data);
       setLocalStorage(result.data);
     })
@@ -78,9 +79,12 @@ var order = document.getElementsByClassName("order")[0];
 btn.onclick = function () {
   modal.style.display = "block";
 }
+// close modal
 close.onclick = function () {
   modal.style.display = "none";
 }
+
+// click mua hàng
 order.onclick = function () {
   Swal.fire({
     position: 'center',
@@ -158,6 +162,7 @@ function updateCart() {
     //  modal.style.display = "block"
     
      updateCart()
+     setLocalStorage()
    })
  }
 }
@@ -189,6 +194,19 @@ function updateCart() {
     })
   }
    }
+
+   function searchPrd(event) {
+    var keyword = event.target.value.toLowerCase().trim();
+    var result = [];
+    var arrPrd =getLocalStorage();
+    for (var i = 0; i < arrPrd.length; i++) {
+      var prdName = arrPrd[i].name.toLowerCase();
+      if (prdName.includes(keyword)) {
+        result.push(arrPrd[i]);
+      }
+    }
+    renderTable(result);
+  }
 
   
 

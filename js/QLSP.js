@@ -19,7 +19,7 @@ function setLocalStorage(mangSP) {
 }
 
 //Gắn sự kiện click cho button search
-document.getElementById("search").addEventListener("click", function () {
+document.getElementsByClassName("search").addEventListener("click", function () {
   var arrPro = getLocalStorage();
   var searchObj = [];
   console.log(arrPro);
