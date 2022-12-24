@@ -7,6 +7,15 @@
     max-width: 1200px;
 }
 
+.nav-link {
+    margin-top: 8px;
+    font-size: 16px;
+}
+
+.collapse {
+    margin-left: 100px;
+}
+
 .sp-thongbao {
     color: red;
     margin-left: 2px; 

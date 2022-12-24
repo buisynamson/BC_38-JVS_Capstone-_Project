@@ -25,11 +25,12 @@
   <nav class="nav-container">
     <!-- Website nav-menu -->
     <ul class="nav-web">
-      <li><a href="products.html">Phone</a></li>
-      <li><a href="#">Tablet</a></li>
-      <li><a href="#">Laptop</a></li>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#">Sales</a></li>
+      <li><a href="#">News</a></li>
       <li><a href="#">Contact</a></li>
       <li><a href="#">About us</a></li>
+      <li><a href="./admin.html">Admin</a></li>
     </ul>
   </nav>
   <!-- Main -->
@@ -38,16 +39,17 @@
     <header class="header">
       <h1 class="company-name">Mobile Store</h1>
       <div class="header-spans">
-        <span class="search"><i class="fas fa-search"></i><input type="search" id="search-input" name="search"  oninput="searchPrd(event)"
-            placeholder="Search" /></span>
-            <span class="filter">
-              <div class=" form-group d-flex mt-3">
-                  <span class="input-group-text" id="basic-addon1"><i class="fa fa-filter" aria-hidden="true"></i></span>
-                  <select name="" id="mobileSelect" class="form-control" onchange="filterProduct()" >
-                    <option value="0">Điện Thoại</option>
-                  </select>
-                </div>
-            </span>
+        <span class="search"><i class="fas fa-search"></i><input type="text" id="search-input"
+            placeholder="Search here:" oninput="search(event)" />
+        </span>
+        <span class="filter">
+          <div class=" form-group d-flex mt-3">
+            <span class="input-group-text" id="basic-addon1"><i class="fa fa-filter" aria-hidden="true"></i></span>
+            <select name="" id="mobileSelect" class="form-control" onchange="filterProduct()">
+              <option value="0">All Brands</option>
+            </select>
+          </div>
+        </span>
         <span class="user-wrapper">
           <button id="basket" type="button" class="btn btn-success" data-toggle="modal" data-target="#cart">
             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
@@ -171,6 +173,28 @@
     </div>
     <p class="copyright">Copyright &copy; 2022</p>
   </footer>
+
+
+  <script>
+    function search(event) {
+      var keyword = event.target.value.toLowerCase().trim();
+      var result = [];
+      var arrPrd = getLocalStorage();
+      // console.log(arrPrd);
+      for (var i = 0; i < arrPrd.length; i++) {
+        var prdName = arrPrd[i].name.toLowerCase();
+        if (prdName === keyword || prdName.includes(keyword)) {
+          result.push(arrPrd[i]);
+        }
+      }
+      renderTable(result);
+      addCart();
+      updateCart();
+    }
+  </script>
+
+
+
 
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

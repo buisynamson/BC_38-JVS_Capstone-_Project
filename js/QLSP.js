@@ -19,7 +19,7 @@ function setLocalStorage(mangSP) {
 }
 
 //Gắn sự kiện click cho button search
-document.getElementsByClassName("search").addEventListener("click", function () {
+document.getElementById("search").addEventListener("click", function () {
   var arrPro = getLocalStorage();
   var searchObj = [];
   console.log(arrPro);
@@ -84,7 +84,6 @@ function renderTable(mangSP) {
                     class="btn btn-danger">
                      <i class="fa fa-trash-o" aria-hidden="true"></i>
                      </button>
-
                     <button 
                     onclick="viewProduct('${sp.id}')"
                     class="btn btn-info mt-2"> 
