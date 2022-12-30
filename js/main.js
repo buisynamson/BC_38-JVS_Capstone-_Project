@@ -1,16 +1,18 @@
 // Variables
 const productSer = new SanPhamService();
 
+
 supFilterType("mobileSelect");
 fetchListProducts();
+getLocalStorage();
 function fetchListProducts() {
   productSer
     .getList()
     .then(function (result) {
       console.log(result.data);
-      renderTable(result.data);
-      addCart(result.data);
-      setLocalStorage(result.data);
+      setLocalStorage(result.data);  //*
+      renderTable(result.data); //*
+      addCart(result.data);//*
     })
     .catch(function (error) {
       console.log(error);
@@ -68,9 +70,6 @@ function filterProduct() {
 var modal = document.getElementById("cart");
 var btn = document.getElementById("basket");
 var close = document.getElementsByClassName("close")[0];
-// // [0] như  thế này bởi vì mỗi close là một html colection nên khi mình muốn lấy giá trị html thì phải thêm [0].
-// // Nếu có 2 cái component cùng class thì khi [0] nó sẽ hiển thị component 1 còn [1] thì nó sẽ hiển thị component 2.
-// // var clear_btn = document.getElementsByClassName("clear-cart")[0];
 var order = document.getElementsByClassName("order")[0];
 
 btn.onclick = function () {
@@ -81,8 +80,10 @@ close.onclick = function () {
   modal.style.display = "none";
 };
 
-// click mua hàng
+// Click mua hàng
 order.onclick = function () {
+  modal.style.display = "block";
+  var cartItems = document.getElementsByClassName("cart-items")[0];
   Swal.fire({
     position: "center",
     icon: "success",
@@ -90,8 +91,6 @@ order.onclick = function () {
     showConfirmButton: false,
     timer: 1500,
   });
-  modal.style.display = "block";
-  var cartItems = document.getElementsByClassName("cart-items")[0];
   while (cartItems.hasChildNodes()) {
     cartItems.removeChild(cartItems.firstChild);
     updateCart();
@@ -156,6 +155,7 @@ function addCart() {
       addItemToCart(title, price, img);
       // Khi thêm sản phẩm vào giỏ hàng thì sẽ hiển thị modal
       //  modal.style.display = "block"
+
       filterProduct();
       updateCart();
     });
@@ -167,10 +167,9 @@ function addItemToCart(title, price, img) {
   cartRow.classList.add("cart-row");
   var cartItems = document.getElementsByClassName("cart-items")[0];
   var cart_title = cartItems.getElementsByClassName("cart-item-title");
-  //   Nếu title của sản phẩm bằng với title mà bạn thêm vao giỏ hàng thì sẽ thông cho user.
+  //   Nếu title của sản phẩm trùng với title thêm vào giỏ hàng thì sẽ thông báo cho user.
   for (var i = 0; i < cart_title.length; i++) {
     if (cart_title[i].innerText == title) {
-      //  alert('Sản Phẩm Đã Có Trong Giỏ Hàng')
       Swal.fire({
         icon: "error",
         text: "Sản Phẩm Đã Có Trong Giỏ Hàng!",
@@ -206,6 +205,7 @@ function addItemToCart(title, price, img) {
       var button_remove = event.target;
       button_remove.parentElement.parentElement.remove();
       updateCart();
+      
     });
 
   cartRow
@@ -216,5 +216,6 @@ function addItemToCart(title, price, img) {
         input.value = 1;
       }
       updateCart();
+     
     });
 }
